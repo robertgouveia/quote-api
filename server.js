@@ -66,13 +66,13 @@ quoteRouter.put('/:id', (req, res, next) => {
 })
 
 quoteRouter.delete('/:id', (req, res, next) => {
-    const index = req.params.id
-    const quoteToDelete = quotes.filter(quote => {
-        return quote.id === index
-    })
-    if(quoteToDelete.length > 0){
-        quotes.splice(quoteToDelete[0].id, 1)
-        res.status(202).send(quotes)
+    const idToDelete = req.params.id;
+    const indexToDelete = quotes.findIndex(quote => quote.id === idToDelete);
+
+    if(indexToDelete !== -1){
+        quotes.splice(indexToDelete, 1);
+        res.status(202).send(quotes);
+    } else {
+        res.status(404).send();
     }
-    res.status(404).send()
 });
