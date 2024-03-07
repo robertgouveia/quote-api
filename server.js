@@ -13,6 +13,27 @@ app.listen(PORT)
 const quoteRouter = express.Router()
 app.use('/api/quotes', quoteRouter)
 
+quoteRouter.get('/', (req, res, next) => {
+    if(!req.query.name){
+        res.send(quotes);
+    } else {
+        const quoteList = quotes.filter(object => {
+            return object.name = req.query.name
+        })
+        res.send(quoteList)
+    }
+})
+
+quoteRouter.post('/', (req, res, next) => {
+    const {quote, person} = req.query
+    if(quote && person){
+        quotes.push(req.query)
+        res.status(201).send()
+    } else {
+        res.status(400).send()
+    }
+})
+
 quoteRouter.get('/random', (req, res, next) => {
     const quote = getRandomElement(quotes)
     res.send(quote);
