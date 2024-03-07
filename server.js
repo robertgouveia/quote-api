@@ -26,6 +26,11 @@ quoteRouter.get('/', (req, res, next) => {
     }
 })
 
+quoteRouter.get('/random', (req, res, next) => {
+    const quote = getRandomElement(quotes)
+    res.send(quote);
+})
+
 quoteRouter.post('/', (req, res, next) => {
     const {quote, person, id} = req.query
     if(quote && person && id){
@@ -42,6 +47,24 @@ quoteRouter.post('/', (req, res, next) => {
     }
 })
 
+quoteRouter.put('/:id', (req, res, next) => {
+    const index = req.params.id
+    const {name, quote} = req.query
+    let quoteToUpdate = quotes.filter(quote => {
+        return quote.id === index
+    })
+    if(!quoteToUpdate.length > 0 || !(name && quote)){
+        res.status(400).send()
+    }
+    if(name) {
+        quotes[quoteToUpdate[0].id].person = name
+    }
+    if(quote) {
+        quotes[quoteToUpdate[0].id].quote = quote
+    }
+    res.status(202).send(quotes);
+})
+
 quoteRouter.delete('/:id', (req, res, next) => {
     const index = req.params.id
     const quoteToDelete = quotes.filter(quote => {
@@ -53,8 +76,3 @@ quoteRouter.delete('/:id', (req, res, next) => {
     }
     res.status(404).send()
 });
-
-quoteRouter.get('/random', (req, res, next) => {
-    const quote = getRandomElement(quotes)
-    res.send(quote);
-})
