@@ -27,26 +27,31 @@ quoteRouter.get('/', (req, res, next) => {
 })
 
 quoteRouter.post('/', (req, res, next) => {
-    const {quote, person} = req.query
-    if(quote && person){
-        quotes.push(req.query)
-        res.status(201).send()
+    const {quote, person, id} = req.query
+    if(quote && person && id){
+        if(quotes.filter(quote => {
+            return quote.id === id
+        }).length < 1){
+            quotes.push(req.query)
+            res.status(201).send()
+        } else {
+            res.status(400).send()
+        }
     } else {
         res.status(400).send()
     }
 })
 
 quoteRouter.delete('/:id', (req, res, next) => {
-    let quoteIndexToDelete = quotes.filter(quote => {
-        return quote.id === req.params.id
-    });
-    quoteIndexToDelete = quoteIndexToDelete[0].id;
-    if (quoteIndexToDelete !== null) {
-        quotes.splice(quoteIndexToDelete, 1);
-        res.status(202).send(quotes);
-    } else {
-        res.status(404).send();
+    const index = req.params.id
+    const quoteToDelete = quotes.filter(quote => {
+        return quote.id === index
+    })
+    if(quoteToDelete.length > 0){
+        quotes.splice(quoteToDelete[0].id, 1)
+        res.status(202).send(quotes)
     }
+    res.status(404).send()
 });
 
 quoteRouter.get('/random', (req, res, next) => {
