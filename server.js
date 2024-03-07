@@ -18,7 +18,11 @@ quoteRouter.get('/', (req, res, next) => {
         const quoteList = quotes.filter(object => {
             return object.person === req.query.name
         })
-        res.send(quoteList)
+        if(quoteList.length > 0){
+            res.send(quoteList)
+        } else {
+            res.status(404).send()
+        }
     }
 })
 
